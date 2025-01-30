@@ -5,7 +5,7 @@ function Book(title, numberOfPages, author,read){
     this.title=title;
     this.numberOfPages=numberOfPages;
     this.author=author;
-    this.read=read
+    this.read=read;
 }
 
 function addBookToLibrary(title, numberOfPages, author,read){
@@ -23,7 +23,7 @@ function displayBooks(){
 
     libraryContainer.innerHTML = "";
 
-    library.forEach((book) =>{
+    library.forEach((book, index) =>{
         const bookElement = document.createElement("div");
         bookElement.classList.add("book");
 
@@ -32,11 +32,24 @@ function displayBooks(){
             <p>Autor: ${book.author}</p>
             <p>Páginas: ${book.numberOfPages}</p>
             <p>Leído: ${book.read ? "Sí" : "No"}</p>
+            <button class="removeBookButton" data-index="${index}">Eliminar</button>
         `;
         
         libraryContainer.appendChild(bookElement);
 
+        //añadimos el evento de eliminación al botón de cada libro
+        const removeBookButton = bookElement.querySelector(".removeBookButton");
+        removeBookButton.addEventListener("click", (event)=>{
+            const indexToRemove = event.target.getAttribute("data-index");
+            removeBookFromLibrary(indexToRemove);
+        })
+
     })
+}
+
+function removeBookFromLibrary(index){
+    library.splice(index,1);
+    displayBooks();
 }
 
 //Manejo de los botones del formulario
