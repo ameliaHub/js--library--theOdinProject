@@ -8,6 +8,13 @@ function Book(title, numberOfPages, author,read){
     this.read=read;
 }
 
+
+//alternar el estado de lectura (lo comparten todos los objetos libro y al usarlo en vez
+//de crear una funcion en cada objeto usamos prototype y no duplicamos codigo)
+Book.prototype.toggleReadStatus = function(){
+    this.read = !this.read;
+}
+
 function addBookToLibrary(title, numberOfPages, author,read){
     book = new Book(title, numberOfPages, author,read);
     library.push(book);
@@ -33,8 +40,14 @@ function displayBooks(){
             <p>Páginas: ${book.numberOfPages}</p>
             <p>Leído: ${book.read ? "Sí" : "No"}</p>
             <button class="removeBookButton" data-index="${index}">Eliminar</button>
+            <label>
+                <input type="checkbox" class="readStatusCheckbox" data-index="${index}" ${book.read ? "checked" : ""}>
+                Leido
+            </label>
         `;
         
+        //<button class="toggleReadButton" data-index="${index}">Leído</button>
+
         libraryContainer.appendChild(bookElement);
 
         //añadimos el evento de eliminación al botón de cada libro
@@ -44,11 +57,31 @@ function displayBooks(){
             removeBookFromLibrary(indexToRemove);
         })
 
+        //añadimos el evento de cambio de estado de lectura (USANDO BOTÓN EN VEZ DE CHECKBOX)
+        //const toggleReadButton = bookElement.querySelector(".toggleReadButton");
+        //toggleReadButton.addEventListener("click", (event)=>{
+          //  const indexToToggle = event.target.getAttribute("data-index");
+          //  toggleReadStatus(indexToToggle);
+        //})
+
+        const readStatusCheckbox = bookElement.querySelector(".readStatusCheckbox");
+        readStatusCheckbox.addEventListener("change", (event)=>{
+            const indexToToggle = event.target.getAttribute("data-index");
+            toggleReadStatus(indexToToggle);
+        })
+
     })
 }
 
+
 function removeBookFromLibrary(index){
     library.splice(index,1);
+    displayBooks();
+}
+
+function toggleReadStatus(index){
+    const book =library[index];
+    book.toggleReadStatus();
     displayBooks();
 }
 
